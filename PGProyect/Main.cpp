@@ -1,36 +1,36 @@
 #include <iostream>
 #include <vector>
+#include <GL/glew.h>
 #include <GL/glut.h>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "Camera.h"
 
-GLfloat cameraX = 10.0;
-GLfloat cameraY = 40.0;
-GLfloat cameraZ = 10.0;
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
+bool firstMouse = true;
+GLfloat lastX = 300, lastY = 300;
 
-// Estructura para almacenar datos del modelo
+// Structure to store model data
 struct Mesh {
     std::vector<GLfloat> vertices;
     std::vector<GLuint> indices;
 };
 
 std::vector<Mesh> meshes;
+GLfloat rotationAngle = 0.0f;
 
-// Variable para controlar la rotación del objeto
-GLfloat rotationAngle = 0.0;
-
-// Función para cargar un modelo OBJ utilizando Assimp
 void loadOBJ(const std::string& filePath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        std::cerr << "Error al cargar el modelo: " << importer.GetErrorString() << std::endl;
+        std::cerr << "Error loading the model: " << importer.GetErrorString() << std::endl;
         return;
     }
 
-    // Recorrer todos los nodos de la escena y extraer los datos del modelo
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         Mesh mesh;
         const aiMesh* aiMesh = scene->mMeshes[i];
@@ -52,57 +52,91 @@ void loadOBJ(const std::string& filePath) {
     }
 }
 
-// Función de inicialización de OpenGL
 void init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-    // Cargar modelo OBJ
+    glutSetCursor(GLUT_CURSOR_NONE);
     loadOBJ("CT.obj");
 }
 
-// Función de renderizado
 void render() {
+    GLfloat currentFrame = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Configurar la cámara
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(camera.GetZoom(), (GLfloat)600 / (GLfloat)600, 0.1f, 100.0f);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluPerspective(45.0f, 1.0f, 0.1f, 100.0f);
-    gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glm::vec3 cameraPos = camera.GetPosition();
+    glm::vec3 cameraFront = camera.GetFront();
+    glm::vec3 cameraUp = camera.GetUp();
+    gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z,
+        cameraPos.x + cameraFront.x, cameraPos.y + cameraFront.y, cameraPos.z + cameraFront.z,
+        cameraUp.x, cameraUp.y, cameraUp.z);
 
-    // Rotar el objeto alrededor del eje Y
     glRotatef(rotationAngle, 0.0, 1.0, 0.0);
 
-    // Renderizar cada malla del modelo
     for (const auto& mesh : meshes) {
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
-
         glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
-
         glDisableClientState(GL_VERTEX_ARRAY);
     }
 
     glutSwapBuffers();
 }
-// Función de manejo de movimiento del ratón
+
+void processInput(unsigned char key, int x, int y) {
+    if (key == 27) // ESC key
+        exit(0);
+    GLfloat movementSpeed = 12.0f; // Adjust the movement speed as needed
+    if (key == 'w')
+        camera.ProcessKeyboard(FORWARD, deltaTime, movementSpeed);
+    if (key == 's')
+        camera.ProcessKeyboard(BACKWARD, deltaTime, movementSpeed);
+    if (key == 'a')
+        camera.ProcessKeyboard(LEFT, deltaTime, movementSpeed);
+    if (key == 'd')
+        camera.ProcessKeyboard(RIGHT, deltaTime, movementSpeed);
+
+    glutPostRedisplay();
+}
+
+
+void mouseCallback(int x, int y) {
+    if (firstMouse) {
+        lastX = x;
+        lastY = y;
+        firstMouse = false;
+    }
+
+    GLfloat xOffset = x - lastX;
+    GLfloat yOffset = lastY - y; // Reversed since y-coordinates range from bottom to top
+    lastX = x;
+    lastY = y;
+
+    camera.ProcessMouseMovement(xOffset, yOffset);
+
+    glutPostRedisplay();
+}
+
 void mouseMotion(int x, int y) {
-    // Rotar el objeto en función del movimiento del ratón
     rotationAngle += (x - glutGet(GLUT_WINDOW_WIDTH) / 2) * 0.1;
     glutPostRedisplay();
 }
-// Función de manejo de eventos del ratón para rotar la cámara al hacer clic y arrastrar
+
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        // Guardar la posición inicial del clic
         glutMotionFunc(mouseMotion);
     }
     else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        // Detener la rotación cuando se libera el clic
         glutMotionFunc(nullptr);
     }
 }
@@ -113,11 +147,18 @@ int main(int argc, char** argv) {
     glutInitWindowSize(600, 600);
     glutCreateWindow("COOKIE TOWN");
 
+    GLenum err = glewInit();
+    if (GLEW_OK != err) {
+        std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
+        return -1;
+    }
+
     init();
 
     glutDisplayFunc(render);
+    glutKeyboardFunc(processInput);
+    glutPassiveMotionFunc(mouseCallback);
 
-    // Registrar funciones de manejo de eventos del ratón
     glutMouseFunc(mouse);
     glutMotionFunc(nullptr);
 

@@ -1,5 +1,11 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: El directorio intermedio (x64\Debug\) contiene archivos compartidos de otro proyecto (PlanB.vcxproj). Esto puede dar lugar a un comportamiento incorrecto de limpieza y recompilación.
   Main.cpp
-C:\Users\Predator\Desktop\PGProyect\PGProyect\Main.cpp(85,55): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
-C:\Users\Predator\Desktop\PGProyect\PGProyect\Main.cpp(95,59): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
-  PGProyect.vcxproj -> C:\Users\Predator\Desktop\PGProyect\x64\Debug\PGProyect.exe
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(89,55): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(115,17): warning C4244: '=': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(116,17): warning C4244: '=': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(122,13): warning C4244: '=': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(123,13): warning C4244: '=': conversión de 'int' a 'GLfloat'; posible pérdida de datos
+C:\Users\Hp\Desktop\PGProyect\PGProyect\Main.cpp(131,59): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+glew32s.lib(glew.obj) : warning LNK4099: no se encontró PDB '' con 'glew32s.lib(glew.obj)' o en ''; se vinculará el objeto sin tener en cuenta información de depuración
+LINK : warning LNK4098: la biblioteca predeterminada'LIBCMT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+  PGProyect.vcxproj -> C:\Users\Hp\Desktop\PGProyect\x64\Debug\PGProyect.exe
