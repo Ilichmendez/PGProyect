@@ -1,0 +1,8 @@
+﻿  Source.cpp
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+Source.obj : error LNK2019: símbolo externo "public: __cdecl VBO::VBO(float *,__int64)" (??0VBO@@QEAA@PEAM_J@Z) sin resolver al que se hace referencia en la función main
+Source.obj : error LNK2019: símbolo externo "public: void __cdecl VBO::Unbind(void)" (?Unbind@VBO@@QEAAXXZ) sin resolver al que se hace referencia en la función main
+VAO.obj : error LNK2001: símbolo externo "public: void __cdecl VBO::Unbind(void)" (?Unbind@VBO@@QEAAXXZ) sin resolver
+Source.obj : error LNK2019: símbolo externo "public: void __cdecl VBO::Delete(void)" (?Delete@VBO@@QEAAXXZ) sin resolver al que se hace referencia en la función main
+VAO.obj : error LNK2019: símbolo externo "public: void __cdecl VBO::Bind(void)" (?Bind@VBO@@QEAAXXZ) sin resolver al que se hace referencia en la función "public: void __cdecl VAO::LinkAttrib(class VBO &,unsigned int,unsigned int,unsigned int,__int64,void *)" (?LinkAttrib@VAO@@QEAAXAEAVVBO@@III_JPEAX@Z)
+C:\Users\Predator\Desktop\PlanB\x64\Debug\PlanB.exe : fatal error LNK1120: 4 externos sin resolver
