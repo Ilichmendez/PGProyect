@@ -5,13 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include "Camera.h"
-
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-GLfloat deltaTime = 0.0f;
-GLfloat lastFrame = 0.0f;
-bool firstMouse = true;
-GLfloat lastX = 300, lastY = 300;
+#include "camera.h"
 
 // Structure to store model data
 struct Mesh {
@@ -19,9 +13,16 @@ struct Mesh {
     std::vector<GLuint> indices;
 };
 
+// Global variables
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
+bool firstMouse = true;
+GLfloat lastX = 300, lastY = 300;
 std::vector<Mesh> meshes;
 GLfloat rotationAngle = 0.0f;
 
+// Function to load an OBJ model
 void loadOBJ(const std::string& filePath) {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -52,6 +53,7 @@ void loadOBJ(const std::string& filePath) {
     }
 }
 
+// Initialization function
 void init() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
@@ -61,6 +63,7 @@ void init() {
     loadOBJ("CT.obj");
 }
 
+// Rendering function
 void render() {
     GLfloat currentFrame = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
     deltaTime = currentFrame - lastFrame;
@@ -93,23 +96,24 @@ void render() {
     glutSwapBuffers();
 }
 
+// Function to process keyboard input
 void processInput(unsigned char key, int x, int y) {
     if (key == 27) // ESC key
         exit(0);
     GLfloat movementSpeed = 12.0f; // Adjust the movement speed as needed
     if (key == 'w')
-        camera.ProcessKeyboard(FORWARD, deltaTime, movementSpeed);
+        camera.ProcessKeyboard(FORWARD, deltaTime);
     if (key == 's')
-        camera.ProcessKeyboard(BACKWARD, deltaTime, movementSpeed);
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (key == 'a')
-        camera.ProcessKeyboard(LEFT, deltaTime, movementSpeed);
+        camera.ProcessKeyboard(LEFT, deltaTime);
     if (key == 'd')
-        camera.ProcessKeyboard(RIGHT, deltaTime, movementSpeed);
+        camera.ProcessKeyboard(RIGHT, deltaTime);
 
     glutPostRedisplay();
 }
 
-
+// Mouse movement callback
 void mouseCallback(int x, int y) {
     if (firstMouse) {
         lastX = x;
@@ -119,19 +123,24 @@ void mouseCallback(int x, int y) {
 
     GLfloat xOffset = x - lastX;
     GLfloat yOffset = lastY - y; // Reversed since y-coordinates range from bottom to top
-    lastX = x;
-    lastY = y;
+    lastX = 300; // Reset cursor position to center
+    lastY = 300; // Reset cursor position to center
 
     camera.ProcessMouseMovement(xOffset, yOffset);
+
+    // Reset the cursor to the center of the window
+    glutWarpPointer(300, 300);
 
     glutPostRedisplay();
 }
 
+// Mouse motion callback with button pressed
 void mouseMotion(int x, int y) {
     rotationAngle += (x - glutGet(GLUT_WINDOW_WIDTH) / 2) * 0.1;
     glutPostRedisplay();
 }
 
+// Mouse event callback
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         glutMotionFunc(mouseMotion);
@@ -141,6 +150,7 @@ void mouse(int button, int state, int x, int y) {
     }
 }
 
+// Main function
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
