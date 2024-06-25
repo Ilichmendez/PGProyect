@@ -1,178 +1,201 @@
-#include <iostream>
-#include <vector>
+// Std. Includes
+#include <string>
+
+// GLEW
+#define GLEW_STATIC
 #include <GL/glew.h>
-#include <GL/glut.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include "camera.h"
 
-// Structure to store model data
-struct Mesh {
-    std::vector<GLfloat> vertices;
-    std::vector<GLuint> indices;
-};
+// GLFW
+#include <GLFW/glfw3.h>
 
-// Global variables
+// GL includes
+#include "Shader.h"
+#include "Camera.h"
+#include "Model.h"
+
+// GLM Mathemtics
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+// Other Libs
+#include "SOIL2/SOIL2.h"
+
+// Properties
+const GLuint WIDTH = 800, HEIGHT = 600;
+int SCREEN_WIDTH, SCREEN_HEIGHT;
+
+// Function prototypes
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+void DoMovement();
+
+// Camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+bool keys[1024];
+GLfloat lastX = 400, lastY = 300;
+bool firstMouse = true;
+
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
-bool firstMouse = true;
-GLfloat lastX = 300, lastY = 300;
-std::vector<Mesh> meshes;
-GLfloat rotationAngle = 0.0f;
 
-// Function to load an OBJ model
-void loadOBJ(const std::string& filePath) {
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
+int main()
+{
+    // Init GLFW
+    glfwInit();
+    // Set all the required options for GLFW
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        std::cerr << "Error loading the model: " << importer.GetErrorString() << std::endl;
-        return;
+    // Create a GLFWwindow object that we can use for GLFW's functions
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+
+    if (nullptr == window)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+
+        return EXIT_FAILURE;
     }
 
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        Mesh mesh;
-        const aiMesh* aiMesh = scene->mMeshes[i];
+    glfwMakeContextCurrent(window);
 
-        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-            mesh.vertices.push_back(aiMesh->mVertices[j].x);
-            mesh.vertices.push_back(aiMesh->mVertices[j].y);
-            mesh.vertices.push_back(aiMesh->mVertices[j].z);
-        }
+    glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
 
-        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-            const aiFace& face = aiMesh->mFaces[j];
-            for (unsigned int k = 0; k < face.mNumIndices; ++k) {
-                mesh.indices.push_back(face.mIndices[k]);
-            }
-        }
+    // Set the required callback functions
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, MouseCallback);
 
-        meshes.push_back(mesh);
+    // GLFW Options
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    // Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
+    glewExperimental = GL_TRUE;
+    // Initialize GLEW to setup the OpenGL Function pointers
+    if (GLEW_OK != glewInit())
+    {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return EXIT_FAILURE;
     }
-}
 
-// Initialization function
-void init() {
+    // Define the viewport dimensions
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    // OpenGL options
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glutSetCursor(GLUT_CURSOR_NONE);
-    loadOBJ("CT.obj");
-}
 
-// Rendering function
-void render() {
-    GLfloat currentFrame = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
-    deltaTime = currentFrame - lastFrame;
-    lastFrame = currentFrame;
+    // Setup and compile our shaders
+    Shader shader("res/shaders/modelLoading.vs", "res/shaders/modelLoading.frag");
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Load models
+    Model ourModel("res/models/nanosuit.obj");
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(camera.GetZoom(), (GLfloat)600 / (GLfloat)600, 0.1f, 100.0f);
+    //Draw in wireframe
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glm::vec3 cameraPos = camera.GetPosition();
-    glm::vec3 cameraFront = camera.GetFront();
-    glm::vec3 cameraUp = camera.GetUp();
-    gluLookAt(cameraPos.x, cameraPos.y, cameraPos.z,
-        cameraPos.x + cameraFront.x, cameraPos.y + cameraFront.y, cameraPos.z + cameraFront.z,
-        cameraUp.x, cameraUp.y, cameraUp.z);
+    glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
-    glRotatef(rotationAngle, 0.0, 1.0, 0.0);
+    // Game loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Set frame time
+        GLfloat currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
-    for (const auto& mesh : meshes) {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
-        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
-        glDisableClientState(GL_VERTEX_ARRAY);
+        // Check and call events
+        glfwPollEvents();
+        DoMovement();
+
+        // Clear the colorbuffer
+        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        shader.Use();
+
+        glm::mat4 view = camera.GetViewMatrix();
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        // Draw the loaded model
+        glm::mat4 model;
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // Translate it down a bit so it's at the center of the scene
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// It's a bit too big for our scene, so scale it down
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        ourModel.Draw(shader);
+
+        // Swap the buffers
+        glfwSwapBuffers(window);
     }
 
-    glutSwapBuffers();
+    glfwTerminate();
+    return 0;
 }
 
-// Function to process keyboard input
-void processInput(unsigned char key, int x, int y) {
-    if (key == 27) // ESC key
-        exit(0);
-    GLfloat movementSpeed = 12.0f; // Adjust the movement speed as needed
-    if (key == 'w')
+// Moves/alters the camera positions based on user input
+void DoMovement()
+{
+    // Camera controls
+    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
+    {
         camera.ProcessKeyboard(FORWARD, deltaTime);
-    if (key == 's')
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (key == 'a')
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (key == 'd')
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
 
-    glutPostRedisplay();
+    if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
+    {
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    }
+
+    if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
+    {
+        camera.ProcessKeyboard(LEFT, deltaTime);
+    }
+
+    if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
+    {
+        camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
 }
 
-// Mouse movement callback
-void mouseCallback(int x, int y) {
-    if (firstMouse) {
-        lastX = x;
-        lastY = y;
+// Is called whenever a key is pressed/released via GLFW
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+
+    if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+        {
+            keys[key] = true;
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            keys[key] = false;
+        }
+    }
+}
+
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
+{
+    if (firstMouse)
+    {
+        lastX = xPos;
+        lastY = yPos;
         firstMouse = false;
     }
 
-    GLfloat xOffset = x - lastX;
-    GLfloat yOffset = lastY - y; // Reversed since y-coordinates range from bottom to top
-    lastX = 300; // Reset cursor position to center
-    lastY = 300; // Reset cursor position to center
+    GLfloat xOffset = xPos - lastX;
+    GLfloat yOffset = lastY - yPos;  // Reversed since y-coordinates go from bottom to left
+
+    lastX = xPos;
+    lastY = yPos;
 
     camera.ProcessMouseMovement(xOffset, yOffset);
-
-    // Reset the cursor to the center of the window
-    glutWarpPointer(300, 300);
-
-    glutPostRedisplay();
 }
 
-// Mouse motion callback with button pressed
-void mouseMotion(int x, int y) {
-    rotationAngle += (x - glutGet(GLUT_WINDOW_WIDTH) / 2) * 0.1;
-    glutPostRedisplay();
-}
-
-// Mouse event callback
-void mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        glutMotionFunc(mouseMotion);
-    }
-    else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        glutMotionFunc(nullptr);
-    }
-}
-
-// Main function
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(600, 600);
-    glutCreateWindow("COOKIE TOWN");
-
-    GLenum err = glewInit();
-    if (GLEW_OK != err) {
-        std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
-        return -1;
-    }
-
-    init();
-
-    glutDisplayFunc(render);
-    glutKeyboardFunc(processInput);
-    glutPassiveMotionFunc(mouseCallback);
-
-    glutMouseFunc(mouse);
-    glutMotionFunc(nullptr);
-
-    glutMainLoop();
-
-    return 0;
-}
