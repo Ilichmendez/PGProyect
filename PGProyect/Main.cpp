@@ -1,127 +1,160 @@
+#include <string>
 #include <iostream>
-#include <vector>
-#include <GL/glut.h>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "Shader.h"
+#include "Camera.h"
+#include "Model.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "SOIL2/SOIL2.h"
 
-GLfloat cameraX = 10.0;
-GLfloat cameraY = 40.0;
-GLfloat cameraZ = 10.0;
+const GLuint WIDTH = 800, HEIGHT = 600;
+int SCREEN_WIDTH, SCREEN_HEIGHT;
 
-// Estructura para almacenar datos del modelo
-struct Mesh {
-    std::vector<GLfloat> vertices;
-    std::vector<GLuint> indices;
-};
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void MouseCallback(GLFWwindow* window, double xPos, double yPos);
+void DoMovement();
 
-std::vector<Mesh> meshes;
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+bool keys[1024];
+GLfloat lastX = 400, lastY = 300;
+bool firstMouse = true;
 
-// Variable para controlar la rotación del objeto
-GLfloat rotationAngle = 0.0;
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
 
-// Función para cargar un modelo OBJ utilizando Assimp
-void loadOBJ(const std::string& filePath) {
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
-
-    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        std::cerr << "Error al cargar el modelo: " << importer.GetErrorString() << std::endl;
-        return;
+int main()
+{
+    if (!glfwInit())
+    {
+        std::cout << "Failed to initialize GLFW" << std::endl;
+        return EXIT_FAILURE;
     }
 
-    // Recorrer todos los nodos de la escena y extraer los datos del modelo
-    for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
-        Mesh mesh;
-        const aiMesh* aiMesh = scene->mMeshes[i];
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-        for (unsigned int j = 0; j < aiMesh->mNumVertices; ++j) {
-            mesh.vertices.push_back(aiMesh->mVertices[j].x);
-            mesh.vertices.push_back(aiMesh->mVertices[j].y);
-            mesh.vertices.push_back(aiMesh->mVertices[j].z);
-        }
-
-        for (unsigned int j = 0; j < aiMesh->mNumFaces; ++j) {
-            const aiFace& face = aiMesh->mFaces[j];
-            for (unsigned int k = 0; k < face.mNumIndices; ++k) {
-                mesh.indices.push_back(face.mIndices[k]);
-            }
-        }
-
-        meshes.push_back(mesh);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    if (nullptr == window)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return EXIT_FAILURE;
     }
-}
 
-// Función de inicialización de OpenGL
-void init() {
+    glfwMakeContextCurrent(window);
+    glfwGetFramebufferSize(window, &SCREEN_WIDTH, &SCREEN_HEIGHT);
+
+    glfwSetKeyCallback(window, KeyCallback);
+    glfwSetCursorPosCallback(window, MouseCallback);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glewExperimental = GL_TRUE;
+    if (GLEW_OK != glewInit())
+    {
+        std::cout << "Failed to initialize GLEW" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    Shader shader("res/shaders/modelLoading.vs", "res/shaders/modelLoading.frag");
 
-    // Cargar modelo OBJ
-    loadOBJ("CT.obj");
-}
+    Model ourModel("res/models/nanosuit.obj");
 
-// Función de renderizado
-void render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
-    // Configurar la cámara
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluPerspective(45.0f, 1.0f, 0.1f, 100.0f);
-    gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    while (!glfwWindowShouldClose(window))
+    {
+        GLfloat currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
-    // Rotar el objeto alrededor del eje Y
-    glRotatef(rotationAngle, 0.0, 1.0, 0.0);
+        glfwPollEvents();
+        DoMovement();
 
-    // Renderizar cada malla del modelo
-    for (const auto& mesh : meshes) {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, mesh.vertices.data());
+        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, mesh.indices.data());
+        shader.Use();
 
-        glDisableClientState(GL_VERTEX_ARRAY);
+        glm::mat4 view = camera.GetViewMatrix();
+        shader.setMat4("projection", projection);
+        shader.setMat4("view", view);
+
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+        model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+        shader.setMat4("model", model);
+        ourModel.Draw(shader);
+
+        glfwSwapBuffers(window);
     }
 
-    glutSwapBuffers();
-}
-// Función de manejo de movimiento del ratón
-void mouseMotion(int x, int y) {
-    // Rotar el objeto en función del movimiento del ratón
-    rotationAngle += (x - glutGet(GLUT_WINDOW_WIDTH) / 2) * 0.1;
-    glutPostRedisplay();
-}
-// Función de manejo de eventos del ratón para rotar la cámara al hacer clic y arrastrar
-void mouse(int button, int state, int x, int y) {
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        // Guardar la posición inicial del clic
-        glutMotionFunc(mouseMotion);
-    }
-    else if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        // Detener la rotación cuando se libera el clic
-        glutMotionFunc(nullptr);
-    }
-}
-
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(600, 600);
-    glutCreateWindow("COOKIE TOWN");
-
-    init();
-
-    glutDisplayFunc(render);
-
-    // Registrar funciones de manejo de eventos del ratón
-    glutMouseFunc(mouse);
-    glutMotionFunc(nullptr);
-
-    glutMainLoop();
-
+    glfwTerminate();
     return 0;
+}
+
+void DoMovement()
+{
+    if (keys[GLFW_KEY_W] || keys[GLFW_KEY_UP])
+    {
+        camera.ProcessKeyboard(FORWARD, deltaTime);
+    }
+    if (keys[GLFW_KEY_S] || keys[GLFW_KEY_DOWN])
+    {
+        camera.ProcessKeyboard(BACKWARD, deltaTime);
+    }
+    if (keys[GLFW_KEY_A] || keys[GLFW_KEY_LEFT])
+    {
+        camera.ProcessKeyboard(LEFT, deltaTime);
+    }
+    if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
+    {
+        camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+}
+
+void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (GLFW_KEY_ESCAPE == key && GLFW_PRESS == action)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+
+    if (key >= 0 && key < 1024)
+    {
+        if (action == GLFW_PRESS)
+        {
+            keys[key] = true;
+        }
+        else if (action == GLFW_RELEASE)
+        {
+            keys[key] = false;
+        }
+    }
+}
+
+void MouseCallback(GLFWwindow* window, double xPos, double yPos)
+{
+    if (firstMouse)
+    {
+        lastX = xPos;
+        lastY = yPos;
+        firstMouse = false;
+    }
+
+    GLfloat xOffset = xPos - lastX;
+    GLfloat yOffset = lastY - yPos;
+
+    lastX = xPos;
+    lastY = yPos;
+
+    camera.ProcessMouseMovement(xOffset, yOffset);
 }
