@@ -19,6 +19,9 @@
     <Filter Include="Archivos de recursos\Shaders">
       <UniqueIdentifier>{0518480d-0142-4de4-8cbe-35c59b979415}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de recursos\models">
+      <UniqueIdentifier>{56d9abb2-9d58-4581-8d77-c992f617ffee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -49,6 +52,24 @@
     <None Include="light.vert">
       <Filter>Archivos de recursos\Shaders</Filter>
     </None>
+    <None Include="res\shaders\lamp.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\lamp.vs">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\lighting.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\lighting.vs">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\modelLoading.frag">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
+    <None Include="res\shaders\modelLoading.vs">
+      <Filter>Archivos de recursos\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Corazon.jpg">
@@ -60,5 +81,10 @@
     <Image Include="kirby.png">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="res\models\nanosuit.obj">
+      <Filter>Archivos de recursos\models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
