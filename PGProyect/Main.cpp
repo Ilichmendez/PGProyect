@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "SOIL2/SOIL2.h"
+#include <SFML/Audio.hpp>
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -63,6 +64,32 @@ int main()
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glEnable(GL_DEPTH_TEST);
+    
+    ////// sound
+    sf::Sound sound;
+    sf::SoundBuffer sound_buffer;
+
+    sound_buffer.loadFromFile("audio_prueba\cigarra.wav");
+
+    sound.setBuffer(sound_buffer);
+    sf::Listener::setPosition((float)0.0f, (float)0.0f, (float)0.0f);
+    sound.setPosition(0.0f, 0.0f, 0.0f);
+
+    sound.setPitch(1.0f);
+    sound.setVolume(7.0f);
+    sound.setBuffer(sound_buffer);
+    sound.setMinDistance(5.0f);
+    sound.setAttenuation(0.5f);
+    sound.setLoop(true);
+    sound.play();
+
+    sf::Music music;
+    music.openFromFile("2Pac-Time-Back-_Instrumental_.ogg");
+    music.setVolume(100.0f);
+    music.setPitch(1.0f);
+    music.play();
+
+
 
     Shader shader("res/shaders/modelLoading.vs", "res/shaders/modelLoading.frag");
 

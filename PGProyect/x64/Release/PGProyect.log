@@ -1,0 +1,21 @@
+﻿  Main.cpp
+C:\Users\student\source\repos\PGProyect\PGProyect\Camera.h(7,1): warning C4005: 'GLEW_STATIC': redefinición de macro
+  (compilando archivo de origen "Main.cpp")
+  C:\Users\student\source\repos\PGProyect\PGProyect\Camera.h(7,1):
+  'GLEW_STATIC' declarado previamente en la línea de comandos
+  
+C:\Users\student\source\repos\PGProyect\PGProyect\Mesh.h(88,56): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+  (compilando archivo de origen "Main.cpp")
+  
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(71,31): warning C4129: 'A': secuencia de escape de carácter no reconocida
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(71,31): warning C4129: 'z': secuencia de escape de carácter no reconocida
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(87,24): warning C4129: 'A': secuencia de escape de carácter no reconocida
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(87,24): warning C4129: 'T': secuencia de escape de carácter no reconocida
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(104,30): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(191,17): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(192,17): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(196,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(197,21): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(199,13): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+C:\Users\student\source\repos\PGProyect\PGProyect\Main.cpp(200,13): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+LINK : fatal error LNK1181: no se puede abrir el archivo de entrada 'res\models\nanosuit.obj'
