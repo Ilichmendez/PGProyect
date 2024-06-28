@@ -66,9 +66,12 @@ int main()
 
     Shader shader("res/shaders/modelLoading.vs", "res/shaders/modelLoading.frag");
 
-    Model ourModel("res/models/nanosuit.obj");
+    Model ourModel("res/map/map.obj");
 
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+
+    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -87,6 +90,20 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
+
+        // Lighting config
+        shader.setVec3("light.position", lightPos);
+        shader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+        shader.setVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f)); // reduce the influence
+        shader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+        // Material config
+        shader.setInt("material.diffuse", 0);
+        shader.setInt("material.specular", 1);
+        shader.setFloat("material.shininess", 32.0f);
+
+        // Camera position
+        shader.setVec3("viewPos", camera.GetPosition());
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
