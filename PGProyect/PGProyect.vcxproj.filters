@@ -86,5 +86,8 @@
     <Object Include="res\models\nanosuit.obj">
       <Filter>Archivos de recursos\models</Filter>
     </Object>
+    <Object Include="res\map\map.obj">
+      <Filter>Archivos de recursos\models</Filter>
+    </Object>
   </ItemGroup>
 </Project>
