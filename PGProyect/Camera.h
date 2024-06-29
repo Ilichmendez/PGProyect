@@ -30,6 +30,16 @@ const GLfloat SPEED      =  6.0f;
 const GLfloat SENSITIVTY =  0.25f;
 const GLfloat ZOOM       =  45.0f;
 
+const GLfloat MAP_MIN_X = -22.0f;  //Left 10
+const GLfloat MAP_MAX_X = 16.0f;   //Right
+const GLfloat MAP_MIN_Y = -1.5f;   //Down
+const GLfloat MAP_MAX_Y = 25.0f;   //Up
+const GLfloat MAP_MIN_Z = -23.0f;  //Front  17.0
+const GLfloat MAP_MAX_Z = 13.0f;   //behind
+
+const GLfloat strikeX = -10.0;
+const GLfloat strikeZ = -16.0;
+
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
 class Camera
 {
@@ -95,6 +105,20 @@ public:
         if ( direction == RIGHT )
         {
             this->position += this->right * velocity;
+        }
+
+        // Keep the camera within the map limits
+        if (this->position.x < MAP_MIN_X) this->position.x = MAP_MIN_X;
+        if (this->position.x > MAP_MAX_X) this->position.x = MAP_MAX_X;
+        if (this->position.y < MAP_MIN_Y) this->position.y = MAP_MIN_Y;
+        if (this->position.y > MAP_MAX_Y) this->position.y = MAP_MAX_Y;
+        if (this->position.z < MAP_MIN_Z) this->position.z = MAP_MIN_Z;
+        if (this->position.z > MAP_MAX_Z) this->position.z = MAP_MAX_Z;
+
+        //x = -10; z = -16
+        if ((strikeX > this->position.x) && (strikeZ > this->position.z))
+        {
+            this->position.z = strikeZ;
         }
     }
     
