@@ -9,7 +9,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "SOIL2/SOIL2.h"
-#include <SFML/Audio.hpp>
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -64,41 +63,12 @@ int main()
 
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glEnable(GL_DEPTH_TEST);
-    
-    ////// sound
-    sf::Sound sound;
-    sf::SoundBuffer sound_buffer;
-
-    sound_buffer.loadFromFile("audio_prueba\cigarra.wav");
-
-    sound.setBuffer(sound_buffer);
-    sf::Listener::setPosition((float)0.0f, (float)0.0f, (float)0.0f);
-    sound.setPosition(0.0f, 0.0f, 0.0f);
-
-    sound.setPitch(1.0f);
-    sound.setVolume(7.0f);
-    sound.setBuffer(sound_buffer);
-    sound.setMinDistance(5.0f);
-    sound.setAttenuation(0.5f);
-    sound.setLoop(true);
-    sound.play();
-
-    sf::Music music;
-    music.openFromFile("2Pac-Time-Back-_Instrumental_.ogg");
-    music.setVolume(100.0f);
-    music.setPitch(1.0f);
-    music.play();
-
-
 
     Shader shader("res/shaders/modelLoading.vs", "res/shaders/modelLoading.frag");
 
-    Model ourModel("res/map/map.obj");
+    Model ourModel("res/Test/Test.obj");
 
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
-
-    glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
-
 
     while (!glfwWindowShouldClose(window))
     {
@@ -117,20 +87,6 @@ int main()
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("projection", projection);
         shader.setMat4("view", view);
-
-        // Lighting config
-        shader.setVec3("light.position", lightPos);
-        shader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
-        shader.setVec3("light.diffuse", glm::vec3(0.5f, 0.5f, 0.5f)); // reduce the influence
-        shader.setVec3("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-
-        // Material config
-        shader.setInt("material.diffuse", 0);
-        shader.setInt("material.specular", 1);
-        shader.setFloat("material.shininess", 32.0f);
-
-        // Camera position
-        shader.setVec3("viewPos", camera.GetPosition());
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
@@ -162,6 +118,12 @@ void DoMovement()
     if (keys[GLFW_KEY_D] || keys[GLFW_KEY_RIGHT])
     {
         camera.ProcessKeyboard(RIGHT, deltaTime);
+    }
+    if (keys[GLFW_KEY_1]) {
+        camera.Noche();
+    }
+    if (keys[GLFW_KEY_2]) {
+        camera.Dia();
     }
 }
 
