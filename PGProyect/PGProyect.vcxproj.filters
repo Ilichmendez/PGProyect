@@ -22,6 +22,9 @@
     <Filter Include="Archivos de recursos\models">
       <UniqueIdentifier>{56d9abb2-9d58-4581-8d77-c992f617ffee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de recursos\Test">
+      <UniqueIdentifier>{98fd7a02-e6a5-4658-a302-b4bd31593ffb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -36,6 +39,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
@@ -70,6 +76,9 @@
     <None Include="res\shaders\modelLoading.vs">
       <Filter>Archivos de recursos\Shaders</Filter>
     </None>
+    <None Include="res\Test\Test.mtl">
+      <Filter>Archivos de recursos\Test</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Corazon.jpg">
@@ -81,6 +90,150 @@
     <Image Include="kirby.png">
       <Filter>Archivos de recursos\Textures</Filter>
     </Image>
+    <Image Include="res\Test\brick.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Crate_Barrel_Box.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Dif_Prop.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\eskai.jpg">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Fence_Alpha.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Grass.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\grass4.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Heli_Pad.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\huggy-wuggy-kacis.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\KepkaRed.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\MeatChicken.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Medieval_Texture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\minecradft_wood.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\minecraft__moss_stone_brick_textured_wall01.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\minecraftstone03.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Misc_Texture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Nature_Trees.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Night 2.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Palm_Tree.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonApocalypse_Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonApocalypse_Texture_02_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonApocalypse_Texture_04_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonApocalyse_Road_01.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonBattleRoyale_Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonBattleRoyale_Texture_02_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonFarm_Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonGangWarfare_Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\PolygonWar_Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Props.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Road_Barrier.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\rudy_SC 1.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\sand2.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SandWall 1.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SCA_Trees_AlbedoTransparency.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleAirport.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleApocalypse_Texture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleDungeonTexture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleFarm.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleInteriorsHouses.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleRacer_Texture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\SimpleSpace_Texture.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\stone_wall02.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Stuff01.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\Texture_01_A.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\wall02_0.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\wall03.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\WoodenWall01.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
+    <Image Include="res\Test\wood-planks.png">
+      <Filter>Archivos de recursos\Test</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="res\models\nanosuit.obj">
@@ -88,6 +241,9 @@
     </Object>
     <Object Include="res\map\map.obj">
       <Filter>Archivos de recursos\models</Filter>
+    </Object>
+    <Object Include="res\Test\Test.obj">
+      <Filter>Archivos de recursos\Test</Filter>
     </Object>
   </ItemGroup>
 </Project>

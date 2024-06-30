@@ -100,24 +100,6 @@ public:
     {
         glUniformMatrix4fv(glGetUniformLocation(this->Program, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
     }
-
-    // Utility function to set a vec3 uniform
-    void setVec3(const std::string& name, const glm::vec3& value) const
-    {
-        glUniform3fv(glGetUniformLocation(this->Program, name.c_str()), 1, glm::value_ptr(value));
-    }
-
-    // Utility function to set an int uniform
-    void setInt(const std::string& name, int value) const
-    {
-        glUniform1i(glGetUniformLocation(this->Program, name.c_str()), value);
-    }
-
-    // Utility function to set a float uniform
-    void setFloat(const std::string& name, float value) const
-    {
-        glUniform1f(glGetUniformLocation(this->Program, name.c_str()), value);
-    }
 };
 
 #endif
