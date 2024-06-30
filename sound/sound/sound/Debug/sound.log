@@ -1,0 +1,5 @@
+﻿  sound.cpp
+C:\Users\Nelson Pineda\source\repos\sound\sound\sound.cpp(10,29): warning C4129: 'g': unrecognized character escape sequence
+C:\Users\Nelson Pineda\source\repos\sound\sound\sound.cpp(10,64): error C2664: 'BOOL PlaySoundW(LPCWSTR,HMODULE,DWORD)': cannot convert argument 1 from 'const char [17]' to 'LPCWSTR'
+C:\Users\Nelson Pineda\source\repos\sound\sound\sound.cpp(10,29): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\um\playsoundapi.h(112,1): message : see declaration of 'PlaySoundW'
