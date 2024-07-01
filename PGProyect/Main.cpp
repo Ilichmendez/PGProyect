@@ -48,7 +48,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpenGL", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Cookie Town", nullptr, nullptr);
     if (nullptr == window)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -201,9 +201,11 @@ void DoMovement()
     }
     if (keys[GLFW_KEY_1]) {
         camera.Noche();
+        sndPlaySound("noche.wav", SND_ASYNC);
     }
     if (keys[GLFW_KEY_2]) {
         camera.Dia();
+        sndPlaySound("amanecer-pueblo.wav", SND_ASYNC);
     }
 }
 
