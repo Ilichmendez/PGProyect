@@ -12,6 +12,8 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <string>
+#include <windows.h>
+#include <mmsystem.h>
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -19,8 +21,6 @@ int SCREEN_WIDTH, SCREEN_HEIGHT;
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseCallback(GLFWwindow* window, double xPos, double yPos);
 void DoMovement();
-void playMusic(const std::string& filename);
-void playSound();
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 bool keys[1024];
@@ -35,7 +35,7 @@ GLfloat lastFrame = 0.0f;
 
 int main()
 {
-
+    sndPlaySound("KURUMI.wav", SND_ASYNC);
     if (!glfwInit())
     {
         std::cout << "Failed to initialize GLFW" << std::endl;

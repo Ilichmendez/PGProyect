@@ -110,7 +110,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;soil2-debug.lib;assimp-vc143-mtd.lib;sfml-audio.lib;sfml-audio-d.lib;sfml-audio-s.lib;sfml-audio-s-d.lib;sfml-system.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32s.lib;soil2-debug.lib;assimp-vc143-mtd.lib;sfml-audio.lib;sfml-audio-d.lib;sfml-audio-s.lib;sfml-audio-s-d.lib;sfml-system.lib;sfml-system-d.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
