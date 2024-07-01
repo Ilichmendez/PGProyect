@@ -25,7 +25,7 @@ We also take into consideration the collisions on the map, more precisely the ed
 - If the model does not load or you have problems with the assimp library, it could be because you do not have the model well integrated. 
 This must have a specific path as in the following instruction:
 
-`Model ourModel("res/Test/Test.obj");`
+`Model ourModel("res/mapa/mapa.obj");`
 
 - You can download the model [here](https://drive.google.com/file/d/1l6U4HSNFTfZUNLIZZkNClYQBd9BppgJG/view?usp=sharing)
 
