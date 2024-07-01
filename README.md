@@ -41,7 +41,10 @@ This must have a specific path as in the following instruction:
 
 ## Authors
 
-**Ilich Mendez** - [Ilichmendez](https://github.com/Ilichmendez)
-**Obed Cortez**  - [saicob](https://github.com/saicob)
-**Nohelia Vivas** - [noeangeles](https://github.com/noeangeles)
-**Erick Gonzalez** - [Drafttw30](https://github.com/Drafttw30)
+- **Ilich Mendez** - [Ilichmendez](https://github.com/Ilichmendez)
+
+- **Obed Cortez**  - [saicob](https://github.com/saicob)
+  
+- **Nohelia Vivas** - [noeangeles](https://github.com/noeangeles)
+  
+- **Erick Gonzalez** - [Drafttw30](https://github.com/Drafttw30)
