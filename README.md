@@ -29,6 +29,9 @@ This must have a specific path as in the following instruction:
 
 - You can download the model [here](https://drive.google.com/file/d/1l6U4HSNFTfZUNLIZZkNClYQBd9BppgJG/view?usp=sharing)
 
+- You can watch a demo showcase 
+[here](https://drive.google.com/drive/folders/17haMEf-P0o5WSf1onEy25poibUavAHVT?usp=sharing)
+
 ## Build with
 
 - c++
